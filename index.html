@@ -1,18 +1,200 @@
-<div id="edu" class="content">
-        <div style="background: #17212b; padding: 15px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #363c4e;">
-            <h4 style="color:#089981;">💡 Diskusi & Tanya Bebas</h4>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SMC Trader Library</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        /* --- TEMA DASAR (PREMIUM DARK MODE) --- */
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #0b0e14; 
+            color: #ffffff; 
+            margin: 0; 
+            padding: 15px; 
+            overflow-x: hidden;
+        }
+
+        /* --- DESAIN CARD MODERN --- */
+        .card {
+            background: linear-gradient(145deg, #1e2733, #17212b);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #2c3545;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+        }
+
+        /* --- INPUT YANG LEBIH ELEGAN --- */
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 8px 0 15px 0;
+            background: #111820;
+            color: white;
+            border: 1px solid #363c4e;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #2962ff;
+            box-shadow: 0 0 0 2px rgba(41, 98, 255, 0.2);
+        }
+
+        /* --- TOMBOL UTAMA --- */
+        .action-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        .action-btn:active { transform: scale(0.97); }
+        .action-btn.green { background: linear-gradient(to right, #089981, #067d69); color: white; box-shadow: 0 4px 10px rgba(8, 153, 129, 0.3); }
+        .action-btn.blue { background: linear-gradient(to right, #2962ff, #1e4bd8); color: white; box-shadow: 0 4px 10px rgba(41, 98, 255, 0.3); }
+
+        /* --- ACCORDION KATEGORI (CANTIK & MULUS) --- */
+        details {
+            background: #1c2530;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #303b4d;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        summary {
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none; /* Menyembunyikan panah default */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        summary::-webkit-details-marker { display: none; } /* Safari */
+        summary:after {
+            content: '+';
+            font-size: 22px;
+            font-weight: 300;
+            color: #888;
+            transition: 0.3s;
+        }
+        details[open] summary:after {
+            content: '-';
+            color: #fff;
+            transform: rotate(180deg);
+        }
+        details[open] summary {
+            border-bottom: 1px solid #303b4d;
+            background: #232d3a;
+        }
+
+        /* --- GRID TOMBOL MATERI --- */
+        .edu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            padding: 15px;
+            background: #111820;
+        }
+        .edu-btn {
+            padding: 12px 8px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #e0e0e0;
+            transition: 0.2s;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .edu-btn:active { transform: scale(0.92); }
+
+        /* --- WARNA TOMBOL SUB-KATEGORI --- */
+        .bg-blue { background: #1e3a5f; border: 1px solid #2a5082; }
+        .bg-green { background: #1b452f; border: 1px solid #266343; }
+        .bg-orange { background: #5c3818; border: 1px solid #855021; }
+        .bg-red { background: #592020; border: 1px solid #822e2e; }
+        .bg-yellow { background: #544a14; border: 1px solid #786a1d; }
+        .bg-teal { background: #154541; border: 1px solid #206b64; }
+        .bg-purple { background: #3b204f; border: 1px solid #572e75; }
+        .bg-brown { background: #3d2a22; border: 1px solid #573c30; }
+        .bg-pink { background: #592237; border: 1px solid #7d304d; }
+        .bg-grey { background: #2f363b; border: 1px solid #485259; }
+
+        /* --- POPUP / AI TERMINAL --- */
+        #ai-terminal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #ai-terminal.active { display: flex; animation: fadeIn 0.3s ease; }
+        .terminal-box {
+            background: #17212b;
+            border: 1px solid #363c4e;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .close-btn {
+            background: #ef5350;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div id="edu" class="content active">
+        
+        <div class="card">
+            <h4 style="color:#089981; margin:0 0 5px 0;">💡 Diskusi & Tanya Bebas</h4>
             <input type="text" id="freeChat" placeholder="Cth: Kenapa market gold naik terus?">
-            <button class="action-btn" style="background:#089981;" onclick="reqAction('FREE_CHAT', document.getElementById('freeChat').value)">TANYA AI (DENGAN ANALOGI)</button>
+            <button class="action-btn green" onclick="reqAction('FREE_CHAT', document.getElementById('freeChat').value)">Tanya AI (Dengan Analogi)</button>
             
-            <h4 style="color:#2962ff; margin-top: 15px;">📰 Analisis Kejadian Fundamental</h4>
+            <h4 style="color:#2962ff; margin:25px 0 5px 0;">📰 Analisis Kejadian Fundamental</h4>
             <input type="text" id="fundiNews" placeholder="Cth: NFP malam ini bagus sekali">
-            <button class="action-btn blue" onclick="reqAction('FUNDAMENTAL', document.getElementById('fundiNews').value)">ANALISIS DAMPAK KE MARKET</button>
+            <button class="action-btn blue" onclick="reqAction('FUNDAMENTAL', document.getElementById('fundiNews').value)">Analisis Dampak Market</button>
         </div>
 
-        <div style="background: #17212b; padding: 15px; border-radius: 8px;">
-            <p style="font-size:12px; color:#aaa; margin-top:0;">Ensiklopedia Lengkap Indikator Ekonomi (Bot akan membalas di chat).</p>
+        <div class="card">
+            <h4 style="margin: 0 0 5px 0;">📚 Ensiklopedia Makroekonomi</h4>
+            <p style="font-size:12px; color:#aaa; margin: 0 0 15px 0; line-height: 1.4;">
+                Pilih indikator ekonomi di bawah ini untuk mendapatkan penjelasan fundamental dan korelasi market.
+            </p>
             
-            <button class="action-btn blue" style="margin-bottom: 10px;" onclick="reqAction('EDUKASI', 'Cara Membaca Data Fundamental (Actual vs Forecast) dan 15 News Paling Ditunggu Trader')">📖 ATURAN MEMBACA DATA & TOP 15 NEWS</button>
+            <button class="action-btn blue" style="margin-bottom: 20px;" onclick="reqAction('EDUKASI', 'Cara Membaca Data Fundamental (Actual vs Forecast) dan 15 News Paling Ditunggu Trader')">📖 Aturan Membaca Data & Top 15 News</button>
 
             <details><summary style="color: #64b5f6;">🌍 Markets</summary>
                 <div class="edu-grid">
@@ -22,7 +204,7 @@
                 </div>
             </details>
 
-            <details><summary style="color: #81c784;">📊 GDP (Keluaran Dalam Negara)</summary>
+            <details><summary style="color: #81c784;">📊 GDP (Gross Domestic Product)</summary>
                 <div class="edu-grid">
                     <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'Full Year GDP Growth')">Full Year Growth</button>
                     <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP')">GDP</button>
@@ -36,380 +218,173 @@
                     <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP from Services')">Services</button>
                     <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP from Transport')">Transport</button>
                     <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP from Utilities')">Utilities</button>
-                    <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP Growth Contribution Consumer Spending')">Contrib: Consumer</button>
-                    <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP Growth Contribution Exports')">Contrib: Exports</button>
-                    <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP Growth Contribution Government')">Contrib: Govt</button>
-                    <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP Growth Contribution Imports')">Contrib: Imports</button>
-                    <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP Growth Contribution Investment')">Contrib: Invest</button>
                     <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP Growth Rate')">Growth Rate</button>
                     <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP per Capita')">Per Capita</button>
-                    <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP per Capita PPP')">Per Capita PPP</button>
-                    <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'GDP Sales')">GDP Sales</button>
-                    <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'Gross Fixed Capital Formation')">Fixed Cap Formation</button>
-                    <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'Gross National Product')">Gross National Prod</button>
-                    <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'Real Consumer Spending')">Real Cons Spending</button>
-                    <button class="edu-btn bg-green" onclick="reqAction('EDUKASI', 'Weekly Economic Index')">Weekly Eco Index</button>
                 </div>
             </details>
 
-            <details><summary style="color: #ffb74d;">👷 Labour (Pekerjaan)</summary>
+            <details><summary style="color: #ffb74d;">👷 Labour (Tenaga Kerja)</summary>
                 <div class="edu-grid">
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'ADP Employment Change')">ADP Employment</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'ADP Employment Change – Large Firms')">ADP Large Firms</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'ADP Employment Change – Mid-Sized Firms')">ADP Mid-Sized</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'ADP Employment Change – Small Firms')">ADP Small Firms</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'ADP Employment Change Weekly')">ADP Weekly</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Average Annual Wages')">Avg Annual Wages</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Average Hourly Earnings MoM')">Avg Hourly MoM</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Average Hourly Earnings YoY')">Avg Hourly YoY</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Average Weekly Hours')">Avg Weekly Hours</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Challenger Hiring Plans')">Challenger Hiring</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Challenger Job Cuts')">Challenger Job Cuts</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Chicago Fed Hiring Rate')">Chicago Fed Hiring</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Chicago Fed Layoffs Rate')">Chicago Fed Layoff</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Continuing Jobless Claims')">Cont Jobless Claims</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Continuing Jobless Claims - Federal Workers')">Claims Fed Workers</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Earnings Growth Expectations')">Earnings Growth Exp</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Employed Persons')">Employed Persons</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Employment Cost Index')">Employment Cost Idx</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Employment Rate')">Employment Rate</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Full Time Employment')">Full Time Emp</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Government Payrolls')">Govt Payrolls</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Gross Average Monthly Wages')">Gross Avg Monthly</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Initial Jobless Claims')">Initial Claims</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Initial Jobless Claims - Federal Workers')">Init Claims Fed</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Job Layoffs and Discharges')">Job Layoffs</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Job Openings')">Job Openings</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Job Quits Rate')">Job Quits Rate</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Jobless Claims 4-week Average')">Claims 4-week Avg</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'JOLTs Job Openings')">JOLTs Openings</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'JOLTs Job Quits')">JOLTs Quits</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Labour Costs')">Labour Costs</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Long Term Unemployment Rate')">Long Term Unemp</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Manufacturing Payrolls')">Mfg Payrolls</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Mean Unemployment Rate Expectations')">Mean Unemp Exp</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Minimum Wages')">Minimum Wages</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Non Farm Payrolls')">NFP</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Nonfarm Payrolls Private')">NFP Private</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Nonfarm Productivity')">Nonfarm Productiv</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Part Time Employment')">Part Time Emp</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Participation Rate')">Participation Rate</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Population')">Population</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Productivity')">Productivity</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Real Average Hourly Earnings MoM')">Real Avg Hrly MoM</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Real Average Hourly Earnings YoY')">Real Avg Hrly YoY</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Retirement Age Men')">Retire Age Men</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Retirement Age Women')">Retire Age Women</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'U-6 Unemployment Rate')">U-6 Unemp Rate</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Unemployed Persons')">Unemployed Ppl</button>
+                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Non Farm Payrolls')">NFP (Non Farm Payrolls)</button>
+                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Initial Jobless Claims')">Initial Jobless Claims</button>
                     <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Unemployment Rate')">Unemployment Rate</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Unit Labour Costs')">Unit Labour Costs</button>
+                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'ADP Employment Change')">ADP Employment</button>
+                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Average Hourly Earnings MoM')">Avg Hourly MoM</button>
+                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Continuing Jobless Claims')">Cont Jobless Claims</button>
+                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'JOLTs Job Openings')">JOLTs Openings</button>
+                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Participation Rate')">Participation Rate</button>
                     <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Wage Growth')">Wage Growth</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Wages')">Wages</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Wages in Manufacturing')">Wages in Mfg</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Youth Unemployment Rate')">Youth Unemp Rate</button>
                 </div>
             </details>
 
             <details><summary style="color: #e57373;">🏷️ Prices (Inflasi)</summary>
                 <div class="edu-grid">
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', '3-Year Consumer Inflation Expectations')">3-Yr Inflation Exp</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', '5-Year Consumer Inflation Expectations')">5-Yr Inflation Exp</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Consumer Inflation Expectations')">Cons Inflation Exp</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Core Consumer Prices')">Core Cons Prices</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Core Inflation Rate MoM')">Core Inflation MoM</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Core Inflation Rate YoY')">Core Inflation YoY</button>
+                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'CPI')">CPI (Inflasi Utama)</button>
+                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'PPI')">PPI (Inflasi Produsen)</button>
                     <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Core PCE Price Index')">Core PCE</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Core PCE Price Index MoM')">Core PCE MoM</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Core PCE Price Index YoY')">Core PCE YoY</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Core PCE Prices QoQ')">Core PCE QoQ</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Core PPI MoM')">Core PPI MoM</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Core PPI YoY')">Core PPI YoY</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Core Producer Prices')">Core Prod Prices</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'CPI')">CPI</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'CPI Apparel')">CPI Apparel</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'CPI Core Core YoY')">CPI Core YoY</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'CPI Education')">CPI Education</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'CPI Food')">CPI Food</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'CPI Housing Utilities')">CPI Housing</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'CPI Median')">CPI Median</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'CPI Recreation')">CPI Recreation</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'CPI s.a')">CPI s.a</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'CPI Transportation')">CPI Transport</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'CPI Trimmed-Mean')">CPI Trimmed-Mean</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Energy Inflation')">Energy Inflation</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Export Prices')">Export Prices</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Export Prices MoM')">Export Prices MoM</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Export Prices YoY')">Export Prices YoY</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Food Inflation')">Food Inflation</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'GDP Price Index')">GDP Price Index</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Import Prices')">Import Prices</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Import Prices MoM')">Import Prices MoM</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Import Prices YoY')">Import Prices YoY</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Inflation Rate MoM')">Inflation Rate MoM</button>
                     <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Inflation Rate YoY')">Inflation Rate YoY</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Michigan 5 Year Inflation Expectations')">Mich 5-Yr Exp</button>
+                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Core Inflation Rate MoM')">Core Inflation MoM</button>
+                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Export Prices')">Export Prices</button>
+                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Import Prices')">Import Prices</button>
                     <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Michigan Inflation Expectations')">Mich Infl Exp</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'PCE Price Index')">PCE Index</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'PCE Price Index MoM')">PCE Index MoM</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'PCE Price Index YoY')">PCE Index YoY</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'PCE Prices QoQ')">PCE QoQ</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'PPI')">PPI</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'PPI Ex Food Energy and Trade Services')">PPI Ex Food/Energy</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'PPI Ex Food, Energy and Trade MoM')">PPI Ex F/E MoM</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'PPI Ex Food, Energy and Trade YoY')">PPI Ex F/E YoY</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'PPI MoM')">PPI MoM</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'PPI YoY')">PPI YoY</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Services Inflation')">Services Inflation</button>
-                    <button class="edu-btn bg-red" onclick="reqAction('EDUKASI', 'Shelter Inflation')">Shelter Inflation</button>
                 </div>
             </details>
 
-            <details><summary style="color: #fdd835;">💰 Money (Kewangan)</summary>
+            <details><summary style="color: #fdd835;">💰 Money (Kebijakan Moneter)</summary>
                 <div class="edu-grid">
-                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Banks Balance Sheet')">Banks Bal Sheet</button>
-                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Effective Federal Funds Rate')">Fed Funds Rate</button>
-                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Fed Balance Sheet')">Fed Bal Sheet</button>
-                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Fed Capital Account Surplus')">Fed Cap Surplus</button>
                     <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Fed Interest Rate')">Fed Interest Rate</button>
-                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Foreign Bond Investment')">Foreign Bond Inv</button>
+                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Fed Balance Sheet')">Fed Bal Sheet</button>
+                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Effective Federal Funds Rate')">Fed Funds Rate</button>
                     <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Foreign Exchange Reserves')">FX Reserves</button>
-                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Loans to Private Sector')">Loans to Pvt</button>
-                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Money Supply M0')">Money Supply M0</button>
-                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Money Supply M1')">Money Supply M1</button>
                     <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Money Supply M2')">Money Supply M2</button>
-                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Private Debt to GDP')">Pvt Debt to GDP</button>
-                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Proxy Funds Rate')">Proxy Funds Rate</button>
-                    <button class="edu-btn bg-yellow" onclick="reqAction('EDUKASI', 'Secured Overnight Financing Rate')">SOFR</button>
                 </div>
             </details>
 
-            <details><summary style="color: #4db6ac;">🚢 Trade (Perdagangan)</summary>
+            <details><summary style="color: #4db6ac;">🚢 Trade & Government</summary>
                 <div class="edu-grid">
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Auto Exports')">Auto Exports</button>
                     <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Balance of Trade')">Balance of Trade</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Crude Oil Production')">Crude Oil Prod</button>
                     <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Current Account')">Current Account</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Current Account Services')">CA Services</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Current Account to GDP')">CA to GDP</button>
                     <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Exports')">Exports</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Exports by Category')">Exp by Category</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Exports by Country')">Exp by Country</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'External Debt')">External Debt</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Foreign Direct Investment')">FDI</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Foreign Treasury Holdings')">Foreign Treasury</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Foreign Treasury Holdings - Belgium')">Treasury - Belgium</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Foreign Treasury Holdings - Canada')">Treasury - Canada</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Foreign Treasury Holdings - China')">Treasury - China</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Foreign Treasury Holdings - Japan')">Treasury - Japan</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Foreign Treasury Holdings - UK')">Treasury - UK</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Gold Reserves')">Gold Reserves</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Goods Exports')">Goods Exports</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Goods Imports')">Goods Imports</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Goods Trade Balance')">Goods Trade Bal</button>
                     <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Imports')">Imports</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Imports by Category')">Imp by Category</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Imports by Country')">Imp by Country</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Net Long-term TIC Flows')">Net TIC Flows</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Oil Exports')">Oil Exports</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Overall Net Capital Flows')">Net Capital Flows</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Terms of Trade')">Terms of Trade</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Terrorism Index')">Terrorism Index</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Tourism Revenues')">Tourism Revs</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Tourist Arrivals')">Tourist Arrivals</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Weapons Sales')">Weapons Sales</button>
-                    <button class="edu-btn bg-teal" onclick="reqAction('EDUKASI', 'Weekly Crude Oil Production')">Wkly Oil Prod</button>
-                </div>
-            </details>
-
-            <details><summary style="color: #ba68c8;">🏛️ Government (Kerajaan)</summary>
-                <div class="edu-grid">
-                    <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Asylum Applications')">Asylum Apps</button>
-                    <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Corruption Index')">Corruption Index</button>
-                    <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Corruption Rank')">Corruption Rank</button>
-                    <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Credit Rating')">Credit Rating</button>
-                    <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Fiscal Expenditure')">Fiscal Expend.</button>
                     <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Government Budget')">Govt Budget</button>
                     <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Government Debt')">Govt Debt</button>
-                    <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Government Debt to GDP')">Govt Debt to GDP</button>
-                    <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Government Revenues')">Govt Revenues</button>
-                    <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Government Spending')">Govt Spending</button>
-                    <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Government Spending to GDP')">Spending to GDP</button>
-                    <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Holidays')">Holidays</button>
-                    <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Military Expenditure')">Military Expend.</button>
-                    <button class="edu-btn bg-purple" onclick="reqAction('EDUKASI', 'Monthly Budget Statement')">Budget Statement</button>
                 </div>
             </details>
 
-            <details><summary style="color: #a1887f;">🏢 Business (Perniagaan)</summary>
+            <details><summary style="color: #a1887f;">🏢 Business (Manufaktur & Bisnis)</summary>
                 <div class="edu-grid">
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Average Equipment Rate')">Avg Equip Rate</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Bankruptcies')">Bankruptcies</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Business Inventories MoM')">Bus Inventories MoM</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Capacity Utilization')">Capacity Util.</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Car Loan Delinquency')">Car Loan Delinq.</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Car Production')">Car Production</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Car Registrations')">Car Registrations</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Changes in Inventories')">Change Inventories</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Chicago Fed National Activity Index')">Chi Fed Activity</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Chicago PMI')">Chicago PMI</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Coincident Index')">Coincident Index</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Composite Leading Indicator')">Comp Lead Ind.</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Corporate Profits')">Corporate Profits</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Dallas Fed Manufacturing Index')">Dallas Fed Mfg</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Dallas Fed Services Index')">Dallas Fed Svcs</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Dry-Van Rate')">Dry-Van Rate</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Durable Goods Orders MoM')">Durable Goods MoM</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Factory Orders ex Transportation')">Factory Orders ex Tr</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Factory Orders MoM')">Factory Orders MoM</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Industrial Production MoM')">Indus Prod MoM</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Industrial Production YoY')">Indus Prod YoY</button>
                     <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'ISM Manufacturing PMI')">ISM Mfg PMI</button>
                     <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'ISM Services PMI')">ISM Services PMI</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Kansas Fed Manufacturing Index')">Kansas Fed Mfg</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Leading Economic Index')">Lead Econ Index</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'LMI Logistics Managers Index')">LMI Logistics</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Manufacturing Production MoM')">Mfg Prod MoM</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Manufacturing Production YoY')">Mfg Prod YoY</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Mining Production')">Mining Prod</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'New Orders')">New Orders</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'NFIB Business Optimism Index')">NFIB Optimism</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Non Defense Goods Orders Ex Air')">Non Def Goods</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'NY Empire State Manufacturing Index')">NY Empire Mfg</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'NY Fed Services Activity Index')">NY Fed Services</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Philadelphia Fed Manufacturing Index')">Philly Fed Mfg</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Retail Inventories Ex Autos MoM')">Retail Inv Ex Auto</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Richmond Fed Manufacturing Index')">Richmond Fed Mfg</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Richmond Fed Services Index')">Richmond Fed Svcs</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Steel Production')">Steel Production</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Total Vehicle Sales')">Vehicle Sales</button>
-                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Wholesale Inventories MoM')">Wholesale Inv MoM</button>
+                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Durable Goods Orders MoM')">Durable Goods MoM</button>
+                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Industrial Production MoM')">Indus Prod MoM</button>
+                    <button class="edu-btn bg-brown" onclick="reqAction('EDUKASI', 'Chicago PMI')">Chicago PMI</button>
                 </div>
             </details>
 
-            <details><summary style="color: #f06292;">🛍️ Consumer (Pengguna)</summary>
+            <details><summary style="color: #f06292;">🛍️ Consumer (Konsumen)</summary>
                 <div class="edu-grid">
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Bank Lending Rate')">Bank Lending Rate</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Chain Store Sales')">Chain Store Sales</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Consumer Credit Change')">Cons Credit Change</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Consumer Spending')">Cons Spending</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Credit Card Accounts')">Credit Card Accts</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Debt Balance Auto Loans')">Debt Auto Loans</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Debt Balance Credit Cards')">Debt Credit Cards</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Debt Balance Mortgages')">Debt Mortgages</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Debt Balance Student Loans')">Debt Student Loans</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Disposable Personal Income')">Disposabl Income</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Gasoline Prices')">Gasoline Prices</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Households Debt to GDP')">HH Debt to GDP</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Michigan Consumer Expectations')">Mich Cons Exp</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Michigan Consumer Sentiment')">Mich Cons Sentiment</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Michigan Current Conditions')">Mich Curr Cond.</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Personal Income MoM')">Pers Income MoM</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Personal Savings')">Personal Savings</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Personal Spending MoM')">Pers Spending MoM</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Private Sector Credit')">Pvt Sector Credit</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'RCM/TIPP Economic Optimism Index')">RCM Optimism</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Real Personal Spending MoM')">Real Pers Spend MoM</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Redbook YoY')">Redbook YoY</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Monitor YoY')">Retail Monitor YoY</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Building and Garden Supply Stores MoM')">Retail Build/Grdn</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Car Dealers MoM')">Retail Cars MoM</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Clothing Stores MoM')">Retail Clothes MoM</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Control Group MoM')">Retail Control Grp</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Electronics Stores MoM')">Retail Electronics</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Ex Autos MoM')">Retail Ex Autos</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Ex Gas MoM')">Retail Ex Gas</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Ex Gas/Autos MoM')">Retail Ex Gas/Auto</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Food and Beverage Stores MoM')">Retail Food/Bev</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Furniture Stores MoM')">Retail Furniture</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Gasoline Stations MoM')">Retail Gas Stations</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales General Merchandise Stores MoM')">Retail Gen Merch</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Health and Personal Care Stores MoM')">Retail Health/Care</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Miscellaneous Store Retailers MoM')">Retail Misc Stores</button>
                     <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales MoM')">Retail Sales MoM</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Online Trade MoM')">Retail Online Trade</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Restaurants and Bars MoM')">Retail Rest/Bars</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales Sporting Goods and Hobby Stores MoM')">Retail Sports/Hobby</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Retail Sales YoY')">Retail Sales YoY</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Total Household Debt')">Total HH Debt</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Used Car Prices MoM')">Used Car Pr MoM</button>
-                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Used Car Prices YoY')">Used Car Pr YoY</button>
+                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Michigan Consumer Sentiment')">Mich Cons Sentiment</button>
+                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Personal Spending MoM')">Pers Spending MoM</button>
+                    <button class="edu-btn bg-pink" onclick="reqAction('EDUKASI', 'Consumer Credit Change')">Cons Credit Change</button>
                 </div>
             </details>
 
             <details><summary style="color: #90a4ae;">🏠 Housing (Perumahan)</summary>
                 <div class="edu-grid">
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', '15-Year Mortgage Rate')">15-Yr Mortgage</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', '30-Year Mortgage Rate')">30-Yr Mortgage</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Average House Prices')">Avg House Prices</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Average Mortgage Size')">Avg Mortgage Size</button>
                     <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Building Permits')">Building Permits</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Building Permits MoM')">Building Permits MoM</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Case-Shiller Home Price Index')">Case-Shiller Index</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Case-Shiller Home Price Index MoM')">Case-Shiller MoM</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Case-Shiller Home Price Index YoY')">Case-Shiller YoY</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Case-Shiller Single Family Home Price Index')">Case-Shil 1-Family</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Construction Spending MoM')">Construct Spend MoM</button>
                     <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Existing Home Sales')">Exist Home Sales</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Existing Home Sales MoM')">Exist Home MoM</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Existing Home Sales Prices')">Exist Home Prices</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Home Ownership Rate')">Home Owner Rate</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'House Price Index')">House Price Idx</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'House Price Index MoM')">House Price MoM</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'House Price Index YoY')">House Price YoY</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Housing Starts')">Housing Starts</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Housing Starts MoM')">Housing Starts MoM</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Housing Starts Multi Family')">Starts Multi Fam</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Housing Starts Single Family')">Starts Single Fam</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'MBA 30-Year Mortgage Rate')">MBA 30-Yr Rate</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'MBA Mortgage Applications')">MBA Mortgage Apps</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'MBA Mortgage Market Index')">MBA Market Index</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'MBA Mortgage Refinance Index')">MBA Refinance Idx</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'MBA Purchase Index')">MBA Purchase Idx</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Mortgage Originations')">Mortgage Origin.</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'NAHB Housing Market Index')">NAHB Housing Idx</button>
                     <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'New Home Sales')">New Home Sales</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'New Home Sales MoM')">New Home Sales MoM</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Pending Home Sales MoM')">Pend Home MoM</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Pending Home Sales YoY')">Pend Home YoY</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Price to Rent Ratio')">Price to Rent Ratio</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Residential Property Prices')">Resid Prop Prices</button>
-                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Total Housing Inventory')">Total Housing Inv</button>
+                    <button class="edu-btn bg-grey" onclick="reqAction('EDUKASI', 'Housing Starts')">Housing Starts</button>
                 </div>
             </details>
 
-            <details><summary style="color: #4fc3f7;">🧾 Taxes (Cukai)</summary>
+            <details><summary style="color: #ff8a65;">⚡ Energy (Energi & Minyak)</summary>
                 <div class="edu-grid">
-                    <button class="edu-btn bg-blue" onclick="reqAction('EDUKASI', 'Corporate Tax Rate')">Corporate Tax</button>
-                    <button class="edu-btn bg-blue" onclick="reqAction('EDUKASI', 'Personal Income Tax Rate')">Personal Inc Tax</button>
-                    <button class="edu-btn bg-blue" onclick="reqAction('EDUKASI', 'Sales Tax Rate')">Sales Tax</button>
-                    <button class="edu-btn bg-blue" onclick="reqAction('EDUKASI', 'Social Security Rate')">Social Security</button>
-                    <button class="edu-btn bg-blue" onclick="reqAction('EDUKASI', 'Social Security Rate For Companies')">Soc Sec Companies</button>
-                    <button class="edu-btn bg-blue" onclick="reqAction('EDUKASI', 'Social Security Rate For Employees')">Soc Sec Employees</button>
-                    <button class="edu-btn bg-blue" onclick="reqAction('EDUKASI', 'Withholding Tax Rate')">Withholding Tax</button>
-                </div>
-            </details>
-
-            <details><summary style="color: #ff8a65;">⚡ Energy (Tenaga)</summary>
-                <div class="edu-grid">
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'API Crude Oil Stock Change')">API Crude Oil Stock</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'API Cushing Number')">API Cushing Num</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'API Distillate Stocks')">API Distillate</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'API Gasoline Stocks')">API Gasoline</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Baker Hughes Oil Rig Count')">Oil Rig Count</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Baker Hughes Total Rigs Count')">Total Rigs Count</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'EIA Crude Oil Imports Change')">EIA Oil Imports</button>
                     <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'EIA Crude Oil Stocks Change')">EIA Oil Stocks</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'EIA Cushing Crude Oil Stocks Change')">EIA Cushing Oil</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'EIA Distillate Fuel Production Change')">EIA Distillate Prod</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'EIA Distillate Stocks Change')">EIA Distillate Stk</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'EIA Gasoline Production Change')">EIA Gasoline Prod</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'EIA Gasoline Stocks Change')">EIA Gasoline Stk</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'EIA Heating Oil Stocks Change')">EIA Heating Oil</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'EIA Natural Gas Stocks Change')">EIA Natural Gas</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'EIA Refinery Crude Runs Change')">EIA Refinery Runs</button>
-                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Strategic Petroleum Reserve Crude Oil Stocks')">Strategic Petro Res</button>
+                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'API Crude Oil Stock Change')">API Crude Oil Stock</button>
+                    <button class="edu-btn bg-orange" onclick="reqAction('EDUKASI', 'Baker Hughes Oil Rig Count')">Oil Rig Count</button>
                 </div>
             </details>
         </div>
     </div>
+
+    <div id="ai-terminal">
+        <div class="terminal-box">
+            <h3 style="margin-top:0; color:#2962ff; font-size: 16px;">🤖 AI Terminal</h3>
+            <div id="terminal-content" style="font-size: 14px; line-height: 1.5; color: #e0e0e0; white-space: pre-wrap;">
+                </div>
+            <button class="close-btn" onclick="closeTerminal()">TUTUP</button>
+        </div>
+    </div>
+
+    <script>
+        // Inisialisasi Telegram Web App
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+
+        // ==========================================
+        // DATABASE MATERI (KNOWLEDGE BASE)
+        // ==========================================
+        const knowledgeBase = {
+            "Cara Membaca Data Fundamental (Actual vs Forecast) dan 15 News Paling Ditunggu Trader": `📚 **CARA MEMBACA DATA FUNDAMENTAL**\n\n1. Jika **Actual > Forecast** = Ekonomi menguat, mata uang negara tersebut terapresiasi (Naik).\n2. Jika **Actual < Forecast** = Ekonomi melemah, mata uang terdepresiasi (Turun).\n\n💡 *Catatan Emas:* Di XAUUSD (Gold), pergerakannya berbanding terbalik dengan USD. Jika berita AS bagus (Actual > Forecast), Gold biasanya akan TURUN/DROP.`,
+
+            "Government Bond 10Y": `📈 **INTERMARKET: US 10-Year Treasury Yield (US10Y)**\n\n**Korelasi Makro:**\nIni adalah 'musuh bebuyutan' dari Gold. Jika yield obligasi menanjak kuat memecahkan resisten struktur, investor institusi besar akan membuang emas mereka demi imbal hasil pasti dari pemerintah AS.\n\n⚡ **Integrasi SMC:**\nJika US10Y membuat *Higher High*, pastikan kamu hanya mencari peluang *Sell Setup* di Gold. Melawan arus ini sama dengan melawan bank sentral.`,
+
+            "Non Farm Payrolls": `💥 **Non-Farm Payrolls (NFP)**\n\n**Definisi:** Data perubahan jumlah tenaga kerja AS (di luar sektor pertanian) selama bulan lalu.\n\n**Dampak Market:** Ini adalah "Raja" dari segala News. Volatilitas sangat liar. Market Maker sering melakukan manipulasi (whipsaw) atas-bawah untuk menyapu Stop Loss retail sebelum harga terbang ke arah aslinya.`,
+            
+            "CPI": `🔥 **Consumer Price Index (CPI)**\n\n**Definisi:** Mengukur inflasi utama dari sisi harga konsumen. Jika CPI tinggi, The Fed berpotensi menaikkan suku bunga, yang akan membuat USD melesat tajam dan Gold hancur.`,
+            
+            "Fed Interest Rate": `🏦 **Fed Interest Rate (Suku Bunga Acuan)**\n\n**Definisi:** Suku bunga yang ditetapkan bank sentral AS (The Fed). Suku bunga adalah 'gravitasi' dalam dunia finansial. Suku bunga tinggi menyedot uang tunai ke dalam bank AS, memperkuat USD secara masif.`
+        };
+
+        // Skrip Automatik (Auto-Generate) untuk semua indikator yang belum ada teksnya
+        const allIndicators = [
+            "Currency", "Stock Market", "Full Year GDP Growth", "GDP", "GDP Annual Growth Rate", "GDP Constant Prices", "GDP from Agriculture", "GDP from Construction", "GDP From Government", "GDP from Manufacturing", "GDP from Mining", "GDP from Services", "GDP from Transport", "GDP from Utilities", "GDP Growth Rate", "GDP per Capita", "Initial Jobless Claims", "Unemployment Rate", "ADP Employment Change", "Average Hourly Earnings MoM", "Continuing Jobless Claims", "JOLTs Job Openings", "Participation Rate", "Wage Growth", "PPI", "Core PCE Price Index", "Inflation Rate YoY", "Core Inflation Rate MoM", "Export Prices", "Import Prices", "Michigan Inflation Expectations", "Fed Balance Sheet", "Effective Federal Funds Rate", "Foreign Exchange Reserves", "Money Supply M2", "Balance of Trade", "Current Account", "Exports", "Imports", "Government Budget", "Government Debt", "ISM Manufacturing PMI", "ISM Services PMI", "Durable Goods Orders MoM", "Industrial Production MoM", "Chicago PMI", "Retail Sales MoM", "Michigan Consumer Sentiment", "Personal Spending MoM", "Consumer Credit Change", "Building Permits", "Existing Home Sales", "New Home Sales", "Housing Starts", "EIA Crude Oil Stocks Change", "API Crude Oil Stock Change", "Baker Hughes Oil Rig Count"
+        ];
+
+        allIndicators.forEach(indicator => {
+            // Jika indikator belum didefinisikan secara manual di atas, buatkan teks default otomatis
+            if (!knowledgeBase[indicator]) {
+                knowledgeBase[indicator] = `⚙️ **${indicator}**\n\nMaklumat detail untuk indikator ekonomi ini sedang dalam tahap pembaruan sistem. Secara umum, perhatikan rilis "Actual vs Forecast" di Kalender Ekonomi untuk melihat dampaknya pada mata uang.`;
+            }
+        });
+
+        // ==========================================
+        // FUNGSI UTAMA (KLIK TOMBOL)
+        // ==========================================
+        function reqAction(actionType, keyword) {
+            if(!keyword || keyword.trim() === "") { 
+                Telegram.WebApp.showAlert("Kolom teks tidak boleh kosong!"); 
+                return; 
+            }
+
+            // Jika User menekan tombol edukasi ensiklopedia
+            if (actionType === 'EDUKASI') {
+                let content = knowledgeBase[keyword];
+                if (content) {
+                    // Konversi **teks tebal** menjadi tag HTML <b>
+                    let formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+                    document.getElementById("terminal-content").innerHTML = formattedContent;
+                    document.getElementById("ai-terminal").classList.add("active");
+                    Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+                } else {
+                    Telegram.WebApp.showAlert("Materi tidak ditemukan!");
+                }
+            } 
+            // Jika User melakukan Free Chat atau Analisis (Kirim ke Bot)
+            else {
+                Telegram.WebApp.sendData(JSON.stringify({ action: actionType, data: keyword }));
+                Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                Telegram.WebApp.close(); // Tutup Mini App setelah kirim data
+            }
+        }
+
+        // Fungsi Menutup Terminal AI
+        function closeTerminal() {
+            document.getElementById("ai-terminal").classList.remove("active");
+            Telegram.WebApp.HapticFeedback.impactOccurred('light');
+        }
+    </script>
+</body>
+</html>
